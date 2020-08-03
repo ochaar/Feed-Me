@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { StyleSheet, Text, View, Image, FlatList,
-  ActivityIndicator, TouchableOpacity, Dimensions, Button } from 'react-native';
+  ActivityIndicator, TouchableOpacity, Dimensions } from 'react-native';
 import {Picker} from '@react-native-community/picker';
 
 function LoadMore({setNumber}) {
@@ -32,6 +32,16 @@ function Recipe({recipeInfo, navigation}) {
   )
 }
 
+function EmptyList() {
+  return (
+    <View >
+      <Text style={{fontSize: 20}}>
+        No recipe found try to modify your search or verify your connection
+        </Text>
+    </View>
+  )
+}
+
 export default function Results({route, navigation}) {
   const [listRecipe, setListRecipe] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,28 +56,33 @@ export default function Results({route, navigation}) {
     axios.get("https://api.spoonacular.com/recipes/complexSearch?" + searchType
     + search + "&sort=" + filter + "&sortDirection=" + direction +
     "&fillIngredients=true&addRecipeInformation=true&number="+ `${number}` + apiKey)
-      .then(data => {
-        setListRecipe(data.data.results);
-      })
+      .then(data => setListRecipe(data.data.results))
       .then(() => setIsLoading(false));
   }, [number, filter, direction]);
 
   return (
     <View style={{flex: 1}}>
-      { isLoading && <ActivityIndicator size="large" color="#0000ff"/> }
+      {isLoading &&
+    <View style={styles.loading}>
+      <ActivityIndicator size='large' color="#0000ff"/>
+    </View>}
       <Text style={{fontSize: 16}}>Sort by:</Text>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+      <View style={styles.pickers}>
         <Picker
-          style={{height: 30, width: 100}}
-          onValueChange={(itemValue) => setFilter(itemValue)}>
+          selectedValue={filter}
+          enabled={!isLoading}
+          style={{height: 30, width: 150}}
+          onValueChange={itemValue => setFilter(itemValue)}>
           <Picker.Item label="None" value="(empty)" />
-          <Picker.Item label="Time" value="java" />
-          <Picker.Item label="Popularity" value="js" />
-          <Picker.Item label="Healthy" value="health score" />
+          <Picker.Item label="Time" value="time" />
+          <Picker.Item label="Popularity" value="popularity" />
+          <Picker.Item label="Healthy" value="healthiness" />
         </Picker>
         <Picker
-          style={{height: 30, width: 100}}
-          onValueChange={(itemValue) => setDirection(itemValue)}>
+          selectedValue={direction}
+          enabled={!isLoading}
+          style={{height: 30, width: 150}}
+          onValueChange={itemValue => setDirection(itemValue)}>
           <Picker.Item label="Ascending" value="asc" />
           <Picker.Item label="Descending" value="desc" />
         </Picker>
@@ -77,7 +92,7 @@ export default function Results({route, navigation}) {
         data={listRecipe}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({item}) => <Recipe recipeInfo={item} navigation={navigation}/>}
-        ListEmptyComponent={() => !isLoading && <Text>NOPE</Text>}
+        ListEmptyComponent={() => !isLoading && <EmptyList/>}
         ListFooterComponent={() => number === listRecipe.length ?
           <LoadMore setNumber={setNumber} /> : null}
         />
@@ -94,6 +109,20 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "bold", 
     fontSize: 20,
+  },
+  loading: {
+    position: 'absolute',
+    backgroundColor: '#AAA8',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  pickers: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   loadMore: {
     padding: 10,

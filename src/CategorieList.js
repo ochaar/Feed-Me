@@ -1,22 +1,23 @@
 import React from 'react';
 import MySearchBar from './SearchBar';
-import { StyleSheet, SectionList, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, SectionList, Text, View, TouchableHighlight } from 'react-native';
 
 function List({title, item, navigation}) {
   const type = title === "Dish type" ? "type" : title;
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('Results', {search: item, searchType: type + "="})}>
+    <TouchableHighlight onPress={() => navigation.navigate('Results',
+      {search: item, searchType: type.toLowerCase() + "="})}>
     <View style={styles.list}>
       <Text style={{padding: 10}}>{item}</Text> 
     </View>
-    </TouchableOpacity>
+    </TouchableHighlight>
   )
 }
 
 export default function CategorieList ({navigation}) {
   const categories = [
   {
-    title: "cuisine",
+    title: "Cuisine",
     data: ["African", "American", "British", "Cajun", "Caribbean",
     "Chinese", "Eastern European", "European", "French", "German", "Greek", 
     "Indian", "Irish", "Italian", "Japanese", "Jewish", "Korean", "Latin American",
@@ -28,6 +29,11 @@ export default function CategorieList ({navigation}) {
     data: ["main course", "side dish", "dessert", "appetizer", "salad", "bread",
     "breakfast", "soup", "beverage", "sauce", "marinade", "fingerfood", "snack",
     "drink"]
+  },
+  {
+    title: "Diet",
+    data: ["Vegetarian", "Gluten Free", "Ketogenic", "Lacto-Vegetarian",   
+    "Ovo-Vegetarian", "Vegan", "Pescetarian", "Paleo", "Primal"]
   }
 ];
   
@@ -51,7 +57,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   list: {
-    height: 30, 
+    height: 40, 
     borderWidth: 0.2, 
     justifyContent: 'center'
   },

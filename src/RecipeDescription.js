@@ -12,23 +12,24 @@ export default function RecipeDescription({route}) {
     moreInfo.nutrition.nutrients.filter(nutrients => nutrients.unit === "g");
 
   useEffect(() => {
-    axios.get("https://api.spoonacular.com/recipes/" + id + "/information?includeNutrition=true" + apiKey)
+    axios.get("https://api.spoonacular.com/recipes/" + id + 
+      "/information?includeNutrition=true" + apiKey)
       .then(recipe => setMoreInfo(recipe.data));
   }, []);
 
   return (
     <ScrollView>
-      <Image source={{uri: recipeInfo.image}} style={styles.image}/>
+      <Image source={{uri: moreInfo.image || recipeInfo.image}} style={styles.image}/>
         <View style={styles.header}>
           <Text style={styles.textHeader}>{recipeInfo.title}</Text>
         </View>
-        <View style={{padding: 5, flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={styles.recipeInfo}>
           <View style={{padding: 5}}>
             <Text>Preparation: {recipeInfo.preparationMinutes} min</Text>
             <Text>Cooking: {recipeInfo.cookingMinutes} min</Text>
             <Text>Health Score: {recipeInfo.healthScore}</Text>
             <Text>Popularity: {recipeInfo.aggregateLikes} likes</Text>
-            <Text>Recipe by: {recipeInfo.sourceName}</Text>
+            <Text style={{width: width / 2}}>Recipe by: {recipeInfo.sourceName}</Text>
           </View>
           <View>
           {
@@ -41,7 +42,9 @@ export default function RecipeDescription({route}) {
           </View>
         </View>
         <View style={styles.header}>
-          <Text style={styles.textHeader}>Ingredients for {moreInfo.servings} persons:</Text>
+          <Text style={styles.textHeader}>
+            Ingredients for {moreInfo.servings} persons:
+            </Text>
         </View>
         <View style={{padding: 5}}>
         {
@@ -57,7 +60,10 @@ export default function RecipeDescription({route}) {
           <Text style={styles.textHeader}>How to prepare:</Text>
         </View>
         <View style={{padding: 5}}>
-          <Text>{moreInfo.instructions ? moreInfo.instructions : "No Data for this recipe"}</Text>
+          <Text>{
+          moreInfo.instructions ? moreInfo.instructions :
+          "No Data for this recipe"
+          }</Text>
         </View>
     </ScrollView>
   )
@@ -77,6 +83,11 @@ const styles = StyleSheet.create({
   image:{
     width: imageSize,
     height: imageSize,
+  },
+  recipeInfo: {
+    padding: 5, 
+    flexDirection: 'row', 
+    justifyContent: 'space-between'
   },
   textHeader: {
     fontSize: 24,
