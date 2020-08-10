@@ -3,10 +3,9 @@
 
 Here are some examples of using the application
 
-
-![Dessert recipe](examplegif1.gif)
-![Pasta search](examplegif2.gif)
-![Vegetarian search](examplegif3.gif)
+Dessert recipe        |  Pasta search        |  Vegetarian search
+:--------------------:|:--------------------:|:--------------------|
+![](examplegif1.gif)  | ![](examplegif2.gif) | ![](examplegif3.gif)
 
 
 ## Test the app
